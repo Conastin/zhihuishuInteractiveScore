@@ -2,7 +2,7 @@ import json
 import random
 import requests
 
-cookie = 'Z_LOCALE=1; acw_tc=2f624a5915897034579372987e3bdaade44352443c3254cfcd00198686ae99; CASLOGC=%7B%22realName%22%3A%22%E7%8E%8B%E5%AE%89%E7%90%AA%22%2C%22myuniRole%22%3A0%2C%22myinstRole%22%3A0%2C%22userId%22%3A189362841%2C%22headPic%22%3A%22https%3A%2F%2Fimage.zhihuishu.com%2Fzhs%2Fablecommons%2Fdemo%2F201804%2F586a2783a3054bd9a751dbbe5979b530_s3.jpg%22%2C%22uuid%22%3A%22dDQoqmlK%22%2C%22mycuRole%22%3A0%2C%22username%22%3A%22abc9ff5cf3c74fd88d9b227bd51448e5%22%7D; exitRecod_dDQoqmlK=2; o_session_id=34F7287BFEA4B17E720BDB1E1B3C8CAD; c_session_id=AA1C968D55DDABA74C44C8DCFF5E2298; isLogin=myschool; CASTGC=TGT-206714-fqbz4odvG2JWe2jfp6gwbXo0hGqbSaREbQOOzgftLHvmWaGCH9-passport.zhihuishu.com; SESSION=ODMzNGE0MGQtYTBkZS00ZTQyLTk3YTEtMDY5ZmMwYzUxZjI5; SERVERID=472b148b148a839eba1c5c1a8657e3a7|1590036663|1590033065'
+cookie = ''
 
 
 def getLoginUserInfo():
