@@ -3,11 +3,17 @@
 > - **python3.X**
 > - **requests模块**
 # 介绍 #
-默认获取300个问题，答案为问题里其他人的随机回答
+1. 默认回答50个问题
+2. 自动给自己的回答点赞
+# 注意 #
+速度过快会封请求,解封时间半天到一天不等，time.sleep里的时间不要改
 # 使用教程 #
 1. 浏览器打开[http://www.zhihuishu.com](http://www.zhihuishu.com "知到智慧树官网")
-2. F12打开开发者工具 转到网络选项卡![image](https://img-blog.csdnimg.cn/20200521152535947.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0NvbmFzdGlu,size_16,color_FFFFFF,t_70#pic_center)
-3. 登录你的账号
-4. 从网络选项卡里复制任意行里的cookie![image](https://img-blog.csdnimg.cn/20200521152553211.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0NvbmFzdGlu,size_16,color_FFFFFF,t_70#pic_center)
-5. 复制至文件第5行，替换字符串![image](https://img-blog.csdnimg.cn/20200521152605224.png#pic_center)
-6. 运行
+2. 登录你的账号
+3. 访问随便一门课程的成绩分析(https://stuonline.zhihuishu.com/stuonline/stuLearnReportNew)前缀为这一网址，打开后再刷新一下
+4. 访问随便一门课程的问答(https://creditqa-web.zhihuishu.com/shareCourse/qaAnswerIndexPage)前缀为这一网址，打开后再刷新一下
+5. 返回智慧树个人首页(https://onlineh5.zhihuishu.com/onlineWeb.html#/studentIndex)
+6. F12打开网络选项卡，刷新
+7. CTRL+F搜索找到getLoginUserInfo这个名称，注意是xhr类型，复制该请求的cookie
+8. 在postAnswer.py同目录下建立cookie.txt,打开cookie.txt，粘贴复制的cookie，保存
+6. 运行postAnswer.py
