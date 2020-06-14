@@ -335,8 +335,8 @@ def func_postAnswer(filename, number=50):
 		print('共提交题目：', count)
 
 
-def func_getAllAnswer():
-	courses = read_course()
+def func_getAllAnswer(filename):
+	courses = read_course(filename)
 	for course in courses:
 		course_id = course['course_id']
 		course_recruitId = course['course_recruitId']
@@ -380,5 +380,5 @@ if __name__ == '__main__':
 	read_cookie()
 	filename = func_getAllCourse()
 	func_postAnswer(filename)
-	func_getAllAnswer()
+	func_getAllAnswer(filename)
 	func_like()
