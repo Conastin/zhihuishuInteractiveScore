@@ -59,14 +59,14 @@ def isHaveInteractive(course_id, course_recruitId) -> bool:
 	:param course_id: 课程id
 	:return: True or False
 	'''
-	check_url = 'https://stuonline.zhihuishu.com/stuonline/json/stuLearnReportNew/loadStuLearingTab/'
+	check_url = 'https://stuonline.zhihuishu.com/stuonline/json/stuLearnReportNew/loadCourseForum/'
 	data = {
 		'courseId': course_id,
 		'recruitId': course_recruitId,
 		'type': 'l',
 	}
 	r = json.loads(requests.post(check_url, data=data).text)
-	interactiveScore = r['scoreAssessRuleDto']['learnedInteractiveScoreShare']
+	interactiveScore = r['learnedInteractiveScore']
 	if interactiveScore == '0':
 		return False
 	return True
@@ -106,22 +106,22 @@ def getQaNum(course_id, course_recruitId) -> int:
 	:param course_recruitId: 课程recruitId
 	:return: 返回当前课程下目前的答题数量
 	'''
-	getQaNum_url = 'https://creditqa-web.zhihuishu.com/shareCourse/myParticipateQaNum'
+	getQaNum_url = 'https://creditqa.zhihuishu.com/creditqa/web/qa/myParticipateQaNum'
 	data = {
+		'uuid': uuid,
 		'sourceType': 2,
 		'courseId': course_id,
 		'recruitId': course_recruitId,
 	}
 	headers = {
 		'User-Agent': 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36 Edg/81.0.416.77',
-		'Host': 'creditqa-web.zhihuishu.com',
-		'Origin': 'https://creditqa-web.zhihuishu.com',
-		'Referer': 'https://creditqa-web.zhihuishu.com/shareCourse/qaAnswerIndexPage?sourceType=2&courseId=' + str(
-			course_id) + '&recruitId=' + str(course_recruitId),
+		'Host': 'creditqa.zhihuishu.com',
+		'Origin': 'https://qah5.zhihuishu.com',
+		'Referer': 'https://qah5.zhihuishu.com/',
 		'Cookie': cookie
 	}
 	r = json.loads(requests.post(getQaNum_url, data=data, headers=headers).text)
-	return r['result']['answerNum']
+	return r['rt']['answerNum']
 
 
 def getQuestionId(course_id, course_recruitId, num=500) -> list:
@@ -132,12 +132,11 @@ def getQuestionId(course_id, course_recruitId, num=500) -> list:
 	:param num: 获取问题数量 默认500
 	:return: 返回包含问题id的集合
 	'''
-	getQuestionId_url = 'https://creditqa-web.zhihuishu.com/shareCourse/getHotQuestionList'
+	getQuestionId_url = 'https://creditqa.zhihuishu.com/creditqa/web/qa/getHotQuestionList'
 	headers = {
-		'Referer': 'https://creditqa-web.zhihuishu.com/shareCourse/qaAnswerIndexPage?sourceType=2&courseId=' + str(
-			course_id) + '&recruitId=' + str(course_recruitId),
-		'Host': 'creditqa-web.zhihuishu.com',
-		'Origin': 'https://creditqa-web.zhihuishu.com',
+		'Referer': 'https://qah5.zhihuishu.com/',
+		'Host': 'creditqa.zhihuishu.com',
+		'Origin': 'https://qah5.zhihuishu.com',
 		'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36 Edg/81.0.416.77',
 		'Cookie': cookie
 	}
@@ -146,10 +145,11 @@ def getQuestionId(course_id, course_recruitId, num=500) -> list:
 		'courseId': course_id,
 		'pageSize': num,
 		'pageIndex': 0,
+		'uuid': uuid
 	}
 	r = json.loads(requests.post(getQuestionId_url, data=data, headers=headers).text)
 	# print(r)
-	question_list = r['result']['questionInfoList']
+	question_list = r['rt']['questionInfoList']
 	# for question in question_list:
 	#     # 获取到问题id, 获取别人的回答
 	#     print(question['questionId'], question['content'])
@@ -164,13 +164,12 @@ def getAnswer(course_recruitId, course_id, question_id):
 	:param question_id:
 	:return:
 	'''
-	getAnser_url = 'https://creditqa-web.zhihuishu.com/answer/getAnswerInInfoOrderByTime'
+	getAnser_url = 'https://creditqa.zhihuishu.com/creditqa/web/qa/getAnswerInInfoOrderByTime'
 	headers = {
 		'Cookie': cookie,
-		'Host': 'creditqa-web.zhihuishu.com',
-		'Origin': 'https://creditqa-web.zhihuishu.com',
-		'Referer': 'https://creditqa-web.zhihuishu.com/shareCourse/qaAnswerIndexPage?sourceType=2&courseId=' + str(
-			course_id) + '&recruitId=' + str(course_recruitId),
+		'Referer': 'https://qah5.zhihuishu.com/',
+		'Host': 'creditqa.zhihuishu.com',
+		'Origin': 'https://qah5.zhihuishu.com',
 		'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36 Edg/81.0.416.77'
 	}
 	data = {
@@ -179,38 +178,38 @@ def getAnswer(course_recruitId, course_id, question_id):
 		'questionId': question_id,
 		'sourceType': 2,
 		'recruitId': course_recruitId,
-		'courseId': course_id
+		'courseId': course_id,
+		'uuid': uuid
 	}
 	r = json.loads(requests.post(getAnser_url, data=data, headers=headers).text)
-	answer_list = r['result']['answerInfos']
+	answer_list = r['rt']['answerInfos']
 	return answer_list
 
 
 def postAnswer(question_id, answer, course_id, course_recruitId):
-	postAnswer_url = 'https://creditqa-web.zhihuishu.com/answer/saveAnswer'
+	postAnswer_url = 'https://creditqa.zhihuishu.com/creditqa/web/qa/saveAnswer'
 	headers = {
 		'Cookie': cookie,
-		'Host': 'creditqa-web.zhihuishu.com',
-		'Origin': 'https://creditqa-web.zhihuishu.com',
-		'Referer': 'https://creditqa-web.zhihuishu.com/shareCourse/qaAnswerIndexPage?sourceType=2&courseId=' + str(
-			course_id) + '&recruitId=' + str(course_recruitId),
+		'Referer': 'https://qah5.zhihuishu.com/',
+		'Host': 'creditqa.zhihuishu.com',
+		'Origin': 'https://qah5.zhihuishu.com',
 		'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36 Edg/81.0.416.77'
 	}
 	data = {
 		'qid': question_id,
 		'aContent': answer,
 		'source': 2,
+		'uuid': uuid
 	}
 	requests.post(postAnswer_url, data=data, headers=headers)
 
 
 def getMyAnswerList(course_id, course_recruitId):
-	url = 'https://creditqa-web.zhihuishu.com/shareCourse/myParticipateQaNum'
+	url = 'https://creditqa.zhihuishu.com/creditqa/web/qa/myParticipateQaNum'
 	headers = {
-		'Host': 'creditqa-web.zhihuishu.com',
-		'Origin': 'https://creditqa-web.zhihuishu.com',
-		'Referer': 'https://creditqa-web.zhihuishu.com/shareCourse/qaAnswerIndexPage?sourceType=2&courseId=' + str(
-			course_id) + '&recruitId=' + str(course_recruitId),
+		'Referer': 'https://qah5.zhihuishu.com/',
+		'Host': 'creditqa.zhihuishu.com',
+		'Origin': 'https://qah5.zhihuishu.com',
 		'cookie': cookie,
 		'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36 Edg/83.0.478.45'
 	}
@@ -218,19 +217,19 @@ def getMyAnswerList(course_id, course_recruitId):
 		'sourceType': 2,
 		'courseId': course_id,
 		'recruitId': course_recruitId,
+		'uuid': uuid
 	}
 	r = json.loads(requests.post(url, headers=headers, data=data).text)
-	if r['code'] == 200:
-		num = r['result']['answerNum']
+	if r['status'] == '200':
+		num = r['rt']['answerNum']
 		print(num)
 	else:
 		return 'error'
-	url = 'https://creditqa-web.zhihuishu.com/answer/myAnswerList'
+	url = 'https://creditqa.zhihuishu.com/creditqa/web/qa/myAnswerList'
 	headers = {
-		'Host': 'creditqa-web.zhihuishu.com',
-		'Origin': 'https://creditqa-web.zhihuishu.com',
-		'Referer': 'https://creditqa-web.zhihuishu.com/shareCourse/myParticipatePage?sourceType=2&type=1&courseId=' + str(
-			course_id) + '&recruitId=' + str(course_recruitId),
+		'Referer': 'https://qah5.zhihuishu.com/',
+		'Host': 'creditqa.zhihuishu.com',
+		'Origin': 'https://qah5.zhihuishu.com',
 		'cookie': cookie,
 		'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36 Edg/83.0.478.45'
 	}
@@ -242,31 +241,32 @@ def getMyAnswerList(course_id, course_recruitId):
 			'courseId': course_id,
 			'recruitId': course_recruitId,
 			'pageSize': 200,
-			'pageIndex': i
+			'pageIndex': i,
+			'uuid': uuid
 		}
 		r = json.loads(requests.post(url, headers=headers, data=data).text)
-		if r['code'] == 200:
-			answer += r['result']['myAnswers']
+		if r['status'] == '200':
+			answer += r['rt']['myAnswers']
 		i += 1
 	return answer
 
 
 def postLike(answer_id, course_id, course_recruitId):
-	url = 'https://creditqa-web.zhihuishu.com/answer/updateOperationToLike'
+	url = 'https://creditqa.zhihuishu.com/creditqa/web/qa/updateOperationToLike'
 	headers = {
-		'Host': 'creditqa-web.zhihuishu.com',
-		'Origin': 'https://creditqa-web.zhihuishu.com',
-		'Referer': 'https://creditqa-web.zhihuishu.com/shareCourse/myParticipatePage?sourceType=2&type=1&courseId=' + str(
-			course_id) + '&recruitId=' + str(course_recruitId),
+		'Referer': 'https://qah5.zhihuishu.com/',
+		'Host': 'creditqa.zhihuishu.com',
+		'Origin': 'https://qah5.zhihuishu.com',
 		'cookie': cookie
 	}
 	data = {
 		'answerId': answer_id,
 		'islike': 0,
-		'sourceType': 2
+		'sourceType': 2,
+		'uuid': uuid
 	}
 	r = json.loads(requests.post(url, headers=headers, data=data).text)
-	if r['code'] == 200:
+	if r['status'] == '200':
 		print(' answer_id:', answer_id, ' 点赞成功')
 	else:
 		print(' answer_id:', answer_id, ' 点赞失败:', r)
@@ -280,6 +280,7 @@ def func_getAllCourse():
 	else:
 		# print(userInfo)
 		userName = userInfo['result']['realName']
+		global uuid
 		uuid = userInfo['result']['uuid']
 		print(userName, uuid)
 		course_list = getCourseId(uuid)
